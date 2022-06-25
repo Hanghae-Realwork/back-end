@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const { User, postUsersSchema, postLoginSchema }
-= require("../schemas/user");
+= require("../models/user");
 
 router.post("/auth", async (req, res) => {
   try {
@@ -48,7 +48,8 @@ router.post("/signup", async (req, res) => {
       password,
       phone,
       birth,
-      name
+      name,
+      passwordCheck
     } = await postUsersSchema.validateAsync(req.body);
   } catch (err) {
     return res.status(400).send({
@@ -56,15 +57,13 @@ router.post("/signup", async (req, res) => {
     })
   };
 
-  const oldUser = await User.find({ $or: [{ userId }, { nickname }], });
+  const oldUser = await User.find({ userId, nickname });
 
   if (oldUser.length) {
     return res.status(400).send({
       errorMessage: '중복된 이메일 또는 닉네임입니다.',
     });
   }
-
-  const { passwordCheck } = req.body;
 
   if( password !== passwordCheck) {
     res.status(400).send({
@@ -88,5 +87,7 @@ router.post("/signup", async (req, res) => {
     result: "success",
   });
 });
+
+
 
 module.exports = router;
