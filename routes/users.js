@@ -3,15 +3,14 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const { User, postUsersSchema, postLoginSchema }
-= require("../schemas/user");
+const { User, postUsersSchema, postLoginSchema } = require("../models/user");
 
 router.post("/auth", async (req, res) => {
   try {
     var { userId, password } = await postLoginSchema.validateAsync(req.body);
   } catch {
     return res.status(402).send({
-      errorMessage: '아이디나 패스워드가 유효하지 않습니다.',
+      errorMessage: "아이디나 패스워드가 유효하지 않습니다.",
     });
   }
 
@@ -30,49 +29,40 @@ router.post("/auth", async (req, res) => {
     return res.status(200).send({
       result: "success",
       token,
-      nickname: user.nickname
+      nickname: user.nickname,
     });
   } else {
     return res.status(400).send({
-      errorMessage: "아이디나 비밀번호가 잘못 됐습니다."
+      errorMessage: "아이디나 비밀번호가 잘못 됐습니다.",
     });
   }
-
 });
 
 router.post("/signup", async (req, res) => {
   try {
-    var {
-      userId,
-      nickname,
-      password,
-      phone,
-      birth,
-      name
-    } = await postUsersSchema.validateAsync(req.body);
+    var { userId, nickname, password, phone, birth, name } = await postUsersSchema.validateAsync(req.body);
   } catch (err) {
     return res.status(400).send({
-      errorMessage: '입력조건이 맞지 않습니다.'
-    })
-  };
+      errorMessage: "입력조건이 맞지 않습니다.",
+    });
+  }
 
-  const oldUser = await User.find({ $or: [{ userId }, { nickname }], });
+  const oldUser = await User.find({ $or: [{ userId }, { nickname }] });
 
   if (oldUser.length) {
     return res.status(400).send({
-      errorMessage: '중복된 이메일 또는 닉네임입니다.',
+      errorMessage: "중복된 이메일 또는 닉네임입니다.",
     });
   }
 
   const { passwordCheck } = req.body;
 
-  if( password !== passwordCheck) {
+  if (password !== passwordCheck) {
     res.status(400).send({
-      errorMessage: '비밀번호가 일치하지 않습니다.'
-    })
+      errorMessage: "비밀번호가 일치하지 않습니다.",
+    });
     return;
   }
-
 
   try {
     const hash = bcrypt.hashSync(password, 10);
@@ -80,8 +70,8 @@ router.post("/signup", async (req, res) => {
     user.save();
   } catch {
     return res.status(400).send({
-      errorMessage: '회원가입에 실패하였습니다.'
-    })
+      errorMessage: "회원가입에 실패하였습니다.",
+    });
   }
 
   res.status(200).send({
