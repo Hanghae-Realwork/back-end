@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const { User, postUsersSchema, postLoginSchema }
 = require("../models/user");
 
-router.post("/auth", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     var { userId, password } = await postLoginSchema.validateAsync(req.body);
   } catch {
@@ -56,15 +56,15 @@ router.post("/signup", async (req, res) => {
     })
   };
 
-  if(userId || nickname || password || phone || birth || name || passwordCheck === "") {
+  if(userId && nickname && password && phone && birth && name && passwordCheck === "") {
     res.status(400).send({ errorMessage : "작성란을 모두 기입해주세요."})
   }
 
 
-  const oldUser = await User.find({ userId, nickname });
+  const oldUser = await User.find({ $or: [{ userId }, { nickname }], });
 
   if (oldUser.length) {
-    return res.status(  400).send({
+    return res.status(400).send({
       errorMessage: '중복된 아이디 또는 닉네임입니다.',
     });
   }
