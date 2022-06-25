@@ -1,9 +1,10 @@
 const express = require("express");
+const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const Resume = require("../models/resume");
 
 // 개발자 정보 등록
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const { title, content, content2, content3, skills, email, phone } = req.body;
     const start = new Date();
@@ -22,7 +23,7 @@ router.post("/", async (req, res) => {
 });
 
 // 개발자 정보 조회
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const resumes = await Resume.find();
     res.status(200).send({ resumes });
@@ -33,12 +34,12 @@ router.get("/", async (req, res) => {
 });
 
 // 개발자 상세조회
-router.get("/:resumeId", async (req, res) => {});
+router.get("/:resumeId", authMiddleware, async (req, res) => {});
 
 // 개발자 정보 수정
-router.put("/:resumeId", async (req, res) => {});
+router.put("/:resumeId", authMiddleware, async (req, res) => {});
 
 // 개발자 정보 삭제
-router.delete("/:resumeId", async (req, res) => {});
+router.delete("/:resumeId", authMiddleware, async (req, res) => {});
 
 module.exports = router;
