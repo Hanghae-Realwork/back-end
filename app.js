@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const helmet = require("helmet");
 const cors = require("cors");
@@ -9,6 +10,19 @@ const resumesRouter = require("./routes/resumes");
 const port = 3000;
 require("dotenv").config();
 
+mongoose
+  .connect(process.env.MONGODB, {
+    dbName: "renDev",
+    ignoreUndefined: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+
 app.use(
   cors({
     // exposedHeaders:["authorization"],
@@ -16,6 +30,7 @@ app.use(
     credentials: "true",
   })
 );
+
 const connect = require("./models");
 connect();
 
