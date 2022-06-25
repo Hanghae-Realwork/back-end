@@ -41,7 +41,7 @@ const postUsersSchema = Joi.object({
   // 한글,영어,숫자포함 가능 4~12자
   passwordCheck: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{4,12}$")).required(),
   // 한글,영어,숫자포함 가능 4~12자
-  phone: Joi.string().pattern(new RegExp(/^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/)).required(),
+  phone: Joi.string().pattern(new RegExp(/^[0-9]{3}-[0-9]{4}-[0-9]{4}/)).required(),
   // 숫자(2~3자리) - 숫자(3~4자리) - 숫자(4자리)
   birth: Joi.string().pattern(new RegExp(/^(19[0-9][0-9]|20\d{2})-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/)).required(),
   // 19xx || 20xx년 - xx월 -- xx일
