@@ -15,7 +15,6 @@
     "nodemon": "^2.0.18"
   },
   "name": "realwork_project",
-  
   "description": "항해99 실전프로젝트 백엔드",
   "version": "1.0.0",
   "main": "app.js",
