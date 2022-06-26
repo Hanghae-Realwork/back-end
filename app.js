@@ -20,6 +20,7 @@ mongoose
   .catch((err) => {
     console.error(err);
   });
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 
@@ -31,8 +32,8 @@ app.use(
   })
 );
 
-const connect = require("./models");
-connect();
+// const connect = require("./models");
+// connect();
 
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: false }));
 app.use(express.json());

@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 
 const ResumeSchema = new mongoose.Schema({
   // resumeId: {
-  //   type: ObjectId,
+  //   type: String,
+  //   required: true
   // },
   userId: {
     type: String,
+    required: true,
   },
   title: {
     type: String,
@@ -24,11 +26,11 @@ const ResumeSchema = new mongoose.Schema({
     required: true,
   },
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
   skills: {
@@ -41,7 +43,7 @@ const ResumeSchema = new mongoose.Schema({
     required: true,
   },
   phone: {
-    type: Number,
+    type: String,
     required: true,
   },
 });
