@@ -2,8 +2,7 @@ const jwt = require("jsonwebtoken");
 const { User, Object } = require("../models/user.js");
 require("dotenv").config();
 
-module.exports = (req, res, next) => {
-
+module.exports = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
 
@@ -13,8 +12,7 @@ module.exports = (req, res, next) => {
       res.status(400).json({ errorMessage: "Token is not a Bearer" });
     }
 
-  const [tokenType, tokenValue] = authorization.split(" ");
-
+    const [tokenType, tokenValue] = authorization.split(" ");
 
     if (tokenType !== "Bearer") {
       return res.status(401).json({ errorMessage: "로그인이 필요한 기능입니다." });
@@ -24,7 +22,9 @@ module.exports = (req, res, next) => {
     if (!userId) {
       return res.status(401).json({ errorMessage: "Token is expired" });
     } else {
-      User.findOne({ userId }).exec().then((user) => {
+      User.findOne({ userId })
+        .exec()
+        .then((user) => {
           res.locals.user = user;
           next();
         });
@@ -32,42 +32,39 @@ module.exports = (req, res, next) => {
   } catch (err) {
     if (err.name === "TokenExpiredError") {
       try {
-        const { authorization, reauthorization } = req.headers
-        const [ tokenType, tokenValue ] = authorization.split(" ")
-        const [ reTokenType, reTokenValue ] = reauthorization.split(" ")
+        const { authorization, reauthorization } = req.headers;
+        const [tokenType, tokenValue] = authorization.split(" ");
+        const [reTokenType, reTokenValue] = reauthorization.split(" ");
 
         if (tokenType && reTokenType !== "Bearer") {
-          return res.status(400).json({ errorMessage: "Token is not a Bearer" })
+          return res.status(400).json({ errorMessage: "Token is not a Bearer" });
         }
         const reToken = jwt.verify(reTokenValue, process.env.JWT_SECRET_REFRESH);
         const tokenDecode = jwt.decode(tokenValue);
 
-        if(tokenDecode.userId !== reToken.userId){
-          return res.status(400).json({ errorMessage: "Token is expired" })
-        };
+        if (tokenDecode.userId !== reToken.userId) {
+          return res.status(400).json({ errorMessage: "Token is expired" });
+        }
         const existUser = await User.findOne(tokenDecode.userId);
-        if(!existUser){
+        if (!existUser) {
           return res.stauts(400).json({ errorMessage: "Token is expired" });
-        };
+        }
 
-        const { userId, nickname } = existUser
-        const payload = { userId, nickname }
+        const { userId, nickname } = existUser;
+        const payload = { userId, nickname };
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-          expiresIn: "1h"
-        })
+          expiresIn: "1h",
+        });
         return res.status(200).json({
-          message : "토큰이 재발급 됐습니다." ,
+          message: "토큰이 재발급 됐습니다.",
           token,
-        })
-
+        });
       } catch (err) {
-        if(error.name === "TokenExpiredError") {
-          return res.status(401).json({ errorMessage: "refreshToken is expired" })
+        if (error.name === "TokenExpiredError") {
+          return res.status(401).json({ errorMessage: "refreshToken is expired" });
         } else {
-          
         }
       }
     }
-
   }
 };
