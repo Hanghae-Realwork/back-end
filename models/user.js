@@ -31,6 +31,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profileImage: {
+    type: String,
+  },
+  // policy: {
+  //   type: String,
+  //   required: true
+  // }
 });
 
 const postUsersSchema = Joi.object({
@@ -39,10 +46,14 @@ const postUsersSchema = Joi.object({
     .required(),
   nickname: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$")).required(),
   // 한글,영어,숫자포함 가능 2~8자
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{4,12}$")).required(),
-  // 한글,영어,숫자포함 가능 4~12자
-  passwordCheck: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{4,12}$")).required(),
-  // 한글,영어,숫자포함 가능 4~12자
+  password: Joi.string()
+    .pattern(new RegExp(/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{4,16}$/))
+    .required(),
+  // 한글,영어,숫자, 특수문자 포함 가능 4~16자
+  passwordCheck: Joi.string()
+    .pattern(new RegExp(/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{4,16}$/))
+    .required(),
+  // 한글,영어,숫자, 특수문자 포함 가능 4~16자
   phone: Joi.string()
     .pattern(new RegExp(/^[0-9]{3}-[0-9]{4}-[0-9]{4}/))
     .required(),
@@ -59,7 +70,10 @@ const postLoginSchema = Joi.object({
   userId: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{4,20}$")).required(),
+  password: Joi.string()
+    .pattern(new RegExp(/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{4,16}$/))
+    .required(),
+  // 한글,영어,숫자, 특수문자 포함 가능 4~16자
 });
 
 module.exports = {

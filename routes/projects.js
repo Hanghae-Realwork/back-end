@@ -22,15 +22,17 @@ const upload = multer({
 
 router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
   const { userId } = res.locals.user;
-  const { title, details, role, start, end, skills, email, phone } = req.body;
-  const validation = await projectPostSchema.validateAsync(req.body);
+
+  try {
+    var { title, details, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
+  } catch (err) {
+    return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
+  }
 
   if (!authMiddleware) {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
   } else if (!title || !details || !role || !start || !end || !skills || !email || !phone) {
     res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
-  } else if (validation.error) {
-    res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
   }
 
   const imageReq = req.files; // 복수 선택 이미지 URI 배열화
@@ -96,16 +98,18 @@ router.get("/:projectId", async (req, res) => {
 router.put("/:projectId", authMiddleware, upload.array("photos"), async (req, res) => {
   const { userId } = res.locals.user;
   const { projectId } = req.params;
-  const { title, details, role, start, end, skills, email, phone } = req.body;
-  const validation = await projectPostSchema.validateAsync(req.body);
   const existProject = await Project.findOne({ projectId: projectId });
+
+  try {
+    var { title, details, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
+  } catch (err) {
+    return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
+  }
 
   if (!authMiddleware) {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
   } else if (!title || !details || !role || !start || !end || !skills || !email || !phone) {
     res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
-  } else if (validation.error) {
-    res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
   }
 
   const imageReq = req.files; // -- 복수 선택 이미지 URI 배열화
@@ -185,4 +189,4 @@ router.post('/images', authMiddleware, upload.array('image'), async (req, res) =
 
     };
 
-  }); */
+}); */
