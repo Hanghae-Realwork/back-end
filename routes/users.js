@@ -23,19 +23,18 @@ router.post("/login", async (req, res) => {
   }
 
   if (bcrypt.compareSync(password, user.password)) {
-    const { userId, nickname } = user
-    const payload = { userId, nickname }
-    const token = jwt.sign( payload, process.env.JWT_SECRET_KEY, {
-      expiresIn: '1h'
+    const { userId, nickname } = user;
+    const payload = { userId, nickname };
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1h",
     });
     const refreshToken = jwt.sign({ userId }, process.env.JWT_SECRET_REFRESH, {
-      expiresIn: '2d'
-    })
+      expiresIn: "2d",
+    });
     return res.status(200).send({
-
-      message : "로그인 하셨습니다." ,
+      message: "로그인 하셨습니다.",
       token,
-      refreshToken
+      refreshToken,
     });
   } else {
     return res.status(400).send({

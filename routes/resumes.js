@@ -17,8 +17,8 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// 개발자 정보 조회
-router.get("/", authMiddleware, async (req, res) => {
+// 개발자 정보 전체 조회
+router.get("/", async (req, res) => {
   try {
     const resumes = await Resume.find();
 
