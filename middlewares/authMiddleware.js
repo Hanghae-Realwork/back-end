@@ -3,6 +3,7 @@ const { User, Object } = require("../models/user.js");
 require("dotenv").config();
 
 module.exports = (req, res, next) => {
+
   try {
     const { authorization } = req.headers;
 
@@ -12,7 +13,8 @@ module.exports = (req, res, next) => {
       res.status(400).json({ errorMessage: "Token is not a Bearer" });
     }
 
-    const [tokenType, tokenValue] = authorization.split(" ");
+  const [tokenType, tokenValue] = authorization.split(" ");
+
 
     if (tokenType !== "Bearer") {
       return res.status(401).json({ errorMessage: "로그인이 필요한 기능입니다." });
@@ -66,5 +68,6 @@ module.exports = (req, res, next) => {
         }
       }
     }
+
   }
 };
