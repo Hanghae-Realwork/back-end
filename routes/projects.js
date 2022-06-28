@@ -68,7 +68,7 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
   await Project.create({
     title, details, subscript, role, start, end,
     skills, photos, email, phone, userId,
-    projectId, photos, createdAt,
+    projectId, createdAt,
   });
 
   res.status(200).json({ message: "프로젝트 게시글을 작성했습니다." });
