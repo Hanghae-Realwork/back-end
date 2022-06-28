@@ -76,7 +76,7 @@ router.delete("/:resumeId", authMiddleware, async (req, res) => {
       await Resume.findByIdAndDelete(resumeId);
     }
 
-    res.status(200).send({ message: "나의 정보를 삭제했습니다. " });
+    res.status(200).send({ message: "나의 정보를 삭제했습니다." });
   } catch (error) {
     console.log(error);
     res.status(401).send({ errormessage: "작성자만 삭제할 수 있습니다." });
