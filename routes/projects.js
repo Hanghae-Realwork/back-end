@@ -18,22 +18,27 @@ const upload = multer({
   }),
 });
 
+const createdAt = new Date().toLocaleString('ko-KR'); // 전역변수로 시간 설정
+
 // 프로젝트 등록
 
 router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
-  const { userId } = res.locals.user;
-
-  try {
-    var { title, details, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
-  } catch (err) {
-    return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
-  }
-
-  if (!authMiddleware) {
+  if (!res.locals.user) {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
-  } else if (!title || !details || !role || !start || !end || !skills || !email || !phone) {
-    res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
-  }
+  } else {
+    const { userId } = res.locals.user
+
+    try {
+      var {
+        title, details, subscript, role, start, end, skills, email, phone,
+      } = await projectPostSchema.validateAsync(req.body);
+    } catch (err) {
+      return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
+    }
+
+    if (!title || !details || !subscript || !role || !start || !end || !skills || !email || !phone) {
+      res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
+    }
 
   const imageReq = req.files; // 복수 선택 이미지 URI 배열화
 
@@ -61,21 +66,13 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
   // --
 
   await Project.create({
-    title,
-    details,
-    role,
-    start,
-    end,
-    skills,
-    photos,
-    email,
-    phone,
-    userId,
-    projectId,
-    photos,
+    title, details, subscript, role, start, end,
+    skills, photos, email, phone, userId,
+    projectId, photos, createdAt,
   });
 
   res.status(200).json({ message: "프로젝트 게시글을 작성했습니다." });
+  };
 });
 
 // 프로젝트 조회
@@ -96,19 +93,23 @@ router.get("/:projectId", async (req, res) => {
 // 프로젝트 수정
 
 router.put("/:projectId", authMiddleware, upload.array("photos"), async (req, res) => {
+  if (!res.locals.user) {
+    res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
+  } else {
+
   const { userId } = res.locals.user;
   const { projectId } = req.params;
   const existProject = await Project.findOne({ projectId: projectId });
 
   try {
-    var { title, details, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
+    var {
+      title, details, subscript, role, start, end, skills, email, phone,
+    } = await projectPostSchema.validateAsync(req.body);
   } catch (err) {
     return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
   }
 
-  if (!authMiddleware) {
-    res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
-  } else if (!title || !details || !role || !start || !end || !skills || !email || !phone) {
+  if (!title || !details || !subscript || !role || !start || !end || !skills || !email || !phone) {
     res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
   }
 
@@ -128,16 +129,19 @@ router.put("/:projectId", authMiddleware, upload.array("photos"), async (req, re
 
   if (userId === existProject.userId) {
     if (existProject) {
-      await Project.updateOne({ projectId: projectId }, { $set: { title, details, role, start, end, skills, email, phone, photos } });
+      await Project.updateOne({ projectId: projectId }, {
+        $set: { title, details, subscript, role, start, end, skills, email, phone, photos }
+      });
       res.status(200).json({
         message: "프로젝트 게시글을 수정했습니다.",
       });
+      } else {
+        res.status(400).send({ errorMessage: "게시물 수정 실패." });
+      }
     } else {
-      res.status(400).send({ errorMessage: "게시물 수정 실패." });
-    }
-  } else {
-    res.status(401).send({ errorMessage: "로그인 후 사용하세요." });
-  }
+      res.status(401).send({ errorMessage: "로그인 후 사용하세요." });
+    };
+  };
 });
 
 // 프로젝트 삭제
