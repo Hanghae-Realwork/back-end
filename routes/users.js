@@ -71,7 +71,7 @@ router.post("/signup", async (req, res) => {
     });
     return;
   }
-  const profileImage = ""
+  const profileImage = "";
   // const policy = req.body;
   // if( policy !== true ){
   //   res.status(400).send({
@@ -91,37 +91,37 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get('/auth', authMiddleware, async(req, res) => {
+router.get("/auth", authMiddleware, async (req, res) => {
   try {
-  const user = res.locals.user
-  if(user === undefined) {
-    res.status(401).json({ errorMessage: "로그인이 필요합니다."})
-  } else {
-  const existUser = await User.find();
-  res.status(200).json( existUser )
-   }
-  } catch(err) {
-    if(err){
-      console.log(err)
-      res.status(400).json({ errorMessage: "유저 정보를 찾을 수 없습니다."})
+    const user = res.locals.user;
+    if (user === undefined) {
+      res.status(401).json({ errorMessage: "로그인이 필요합니다." });
+    } else {
+      const existUser = await User.find();
+      res.status(200).json(existUser);
+    }
+  } catch (err) {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ errorMessage: "유저 정보를 찾을 수 없습니다." });
     }
   }
-})
+});
 
-router.get('/details/:nickname', authMiddleware, async(req,res) => {
-  try{
-  const user = res.locals.user
-  if(user === undefined){
-    return res.status(401).json({ errorMessage: "로그인이 필요합니다."})
-  } else {
-    const { nickname } = req.params
-    const existUser = await User.findOne({ nickname : nickname })
-    return res.status(200).json( existUser )
-  }
-  }catch(err){
-    if(err){
-      console.log(err)
-      res.status(400).json({ errorMessage: "유저 정보를 찾을 수 없습니다."})
+router.get("/details/:nickname", authMiddleware, async (req, res) => {
+  try {
+    const user = res.locals.user;
+    if (user === undefined) {
+      return res.status(401).json({ errorMessage: "로그인이 필요합니다." });
+    } else {
+      const { nickname } = req.params;
+      const existUser = await User.findOne({ nickname: nickname });
+      return res.status(200).json(existUser);
+    }
+  } catch (err) {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ errorMessage: "유저 정보를 찾을 수 없습니다." });
     }
   }
 });
