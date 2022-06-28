@@ -51,7 +51,7 @@ const projectSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-  }
+  },
 });
 
 const projectPostSchema = Joi.object({

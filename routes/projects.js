@@ -18,7 +18,7 @@ const upload = multer({
   }),
 });
 
-const createdAt = new Date().toLocaleString('ko-KR'); // 전역변수로 시간 설정
+const createdAt = new Date().toLocaleString("ko-KR"); // 전역변수로 시간 설정
 
 // 프로젝트 등록
 
@@ -26,12 +26,10 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
   if (!res.locals.user) {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
   } else {
-    const { userId } = res.locals.user
+    const { userId } = res.locals.user;
 
     try {
-      var {
-        title, details, subscript, role, start, end, skills, email, phone,
-      } = await projectPostSchema.validateAsync(req.body);
+      var { title, details, subscript, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
     } catch (err) {
       return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
     }
@@ -40,39 +38,49 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
       res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
     }
 
-  const imageReq = req.files; // 복수 선택 이미지 URI 배열화
+    const imageReq = req.files; // 복수 선택 이미지 URI 배열화
 
-  let imageArray = [];
-  function LocationPusher() {
-    for (let i = 0; i < imageReq.length; i++) {
-      imageArray.push(imageReq[i].location);
+    let imageArray = [];
+    function LocationPusher() {
+      for (let i = 0; i < imageReq.length; i++) {
+        imageArray.push(imageReq[i].location);
+      }
+      return imageArray;
     }
-    return imageArray;
+
+    const photos = LocationPusher();
+
+    // -- 별도 라이브러리 설치 없이 projectId 임시 시퀀싱
+
+    const projectExist = await Project.find().sort("-projectId").limit(1);
+    let projectId;
+
+    if (projectExist.length) {
+      projectId = projectExist[0]["projectId"] + 1;
+    } else {
+      projectId = 1;
+    }
+
+    // --
+
+    await Project.create({
+      title,
+      details,
+      subscript,
+      role,
+      start,
+      end,
+      skills,
+      photos,
+      email,
+      phone,
+      userId,
+      projectId,
+      createdAt,
+    });
+
+    res.status(200).json({ message: "프로젝트 게시글을 작성했습니다." });
   }
-
-  const photos = LocationPusher();
-
-  // -- 별도 라이브러리 설치 없이 projectId 임시 시퀀싱
-
-  const projectExist = await Project.find().sort("-projectId").limit(1);
-  let projectId;
-
-  if (projectExist.length) {
-    projectId = projectExist[0]["projectId"] + 1;
-  } else {
-    projectId = 1;
-  }
-
-  // --
-
-  await Project.create({
-    title, details, subscript, role, start, end,
-    skills, photos, email, phone, userId,
-    projectId, createdAt,
-  });
-
-  res.status(200).json({ message: "프로젝트 게시글을 작성했습니다." });
-  };
 });
 
 // 프로젝트 조회
@@ -96,52 +104,52 @@ router.put("/:projectId", authMiddleware, upload.array("photos"), async (req, re
   if (!res.locals.user) {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
   } else {
+    const { userId } = res.locals.user;
+    const { projectId } = req.params;
+    const existProject = await Project.findOne({ projectId: projectId });
 
-  const { userId } = res.locals.user;
-  const { projectId } = req.params;
-  const existProject = await Project.findOne({ projectId: projectId });
-
-  try {
-    var {
-      title, details, subscript, role, start, end, skills, email, phone,
-    } = await projectPostSchema.validateAsync(req.body);
-  } catch (err) {
-    return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
-  }
-
-  if (!title || !details || !subscript || !role || !start || !end || !skills || !email || !phone) {
-    res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
-  }
-
-  const imageReq = req.files; // -- 복수 선택 이미지 URI 배열화
-
-  let imageArray = [];
-  function LocationPusher() {
-    for (let i = 0; i < imageReq.length; i++) {
-      imageArray.push(imageReq[i].location);
+    try {
+      var { title, details, subscript, role, start, end, skills, email, phone } = await projectPostSchema.validateAsync(req.body);
+    } catch (err) {
+      return res.status(400).json({ errorMessage: "작성 형식을 확인해주세요." });
     }
-    return imageArray;
-  }
 
-  // --
+    if (!title || !details || !subscript || !role || !start || !end || !skills || !email || !phone) {
+      res.status(400).json({ errorMessage: "작성란을 모두 기입해주세요." });
+    }
 
-  const photos = LocationPusher();
+    const imageReq = req.files; // -- 복수 선택 이미지 URI 배열화
 
-  if (userId === existProject.userId) {
-    if (existProject) {
-      await Project.updateOne({ projectId: projectId }, {
-        $set: { title, details, subscript, role, start, end, skills, email, phone, photos }
-      });
-      res.status(200).json({
-        message: "프로젝트 게시글을 수정했습니다.",
-      });
+    let imageArray = [];
+    function LocationPusher() {
+      for (let i = 0; i < imageReq.length; i++) {
+        imageArray.push(imageReq[i].location);
+      }
+      return imageArray;
+    }
+
+    // --
+
+    const photos = LocationPusher();
+
+    if (userId === existProject.userId) {
+      if (existProject) {
+        await Project.updateOne(
+          { projectId: projectId },
+          {
+            $set: { title, details, subscript, role, start, end, skills, email, phone, photos },
+          }
+        );
+        res.status(200).json({
+          message: "프로젝트 게시글을 수정했습니다.",
+        });
       } else {
         res.status(400).send({ errorMessage: "게시물 수정 실패." });
       }
     } else {
       res.status(401).send({ errorMessage: "로그인 후 사용하세요." });
-    };
-  };
+    }
+  }
 });
 
 // 프로젝트 삭제
