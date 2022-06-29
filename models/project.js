@@ -5,7 +5,6 @@ const projectSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    unique: true,
   },
   projectId: {
     type: Number,
@@ -39,18 +38,18 @@ const projectSchema = new mongoose.Schema({
     required: true,
   },
   start: {
-    type: Date,
+    type: String,
     required: true,
   },
   end: {
-    type: Date,
+    type: String,
     required: true,
   },
   photos: {
     type: Array,
   },
   createdAt: {
-    type: Date,
+    type: String,
   },
 });
 
