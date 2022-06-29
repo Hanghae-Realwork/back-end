@@ -7,6 +7,8 @@ const multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
 const s3 = new aws.S3();
 
+// multer - S3 이미지 업로드 설정
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
@@ -18,7 +20,18 @@ const upload = multer({
   }),
 });
 
-const createdAt = new Date().toLocaleString("ko-KR"); // 전역변수로 시간 설정
+// 전역변수로 시간 설정, 출력 예제) 1999-09-09 09:09:09
+
+const now = new Date();
+const years = now.getFullYear();
+const months = now.getMonth();
+const dates = now.getDate();
+const hours = now.getHours();
+const minutes = now.getMinutes();
+const seconds = now.getSeconds();
+const createdAt = `${years<10?`0${years}`:`${years}`}` + '-' + `${months<10?`0${months}`:`${months}`}` + '-' + `${dates<10?`0${dates}`:`${dates}`}` + ' ' +
+`${hours<10?`0${hours}`:`${hours}`}` + ':' + `${minutes<10?`0${minutes}`:`${minutes}`}` +
+':' + `${seconds<10?`0${seconds}`:`${seconds}`}`;
 
 // 프로젝트 등록
 
@@ -50,7 +63,7 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
 
     const photos = LocationPusher();
 
-    // -- 별도 라이브러리 설치 없이 projectId 임시 시퀀싱
+// -- 별도 라이브러리 설치 없이 projectId 임시 시퀀싱
 
     const projectExist = await Project.find().sort("-projectId").limit(1);
     let projectId;
@@ -61,7 +74,7 @@ router.post("/", authMiddleware, upload.array("photos"), async (req, res) => {
       projectId = 1;
     }
 
-    // --
+// --
 
     await Project.create({
       title,
@@ -175,30 +188,3 @@ router.delete("/:projectId", authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
-
-// 이미지 업로드
-
-/*
-router.post('/images', authMiddleware, upload.array('image'), async (req, res) => {
-
-    try {
-
-        const imageReq = req.files;
-        let imageArray = [];
-    
-        function LocationPusher() {
-            for (let i = 0; i < imageReq.length; i++) {
-                imageArray.push(imageReq[i].location);
-            } return imageArray;
-        };
-
-        const image = LocationPusher();
-        res.status(200).json({ message : '사진을 업로드 했습니다.', image });
-
-    } catch (err) {
-
-      res.status(400).send({ errorMessage : '사진업로드 실패-파일 형식과 크기(1.5Mb 이하) 를 확인해주세요.' });
-
-    };
-
-}); */
