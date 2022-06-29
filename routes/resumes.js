@@ -2,12 +2,28 @@ const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const Resume = require("../models/resume");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
+const s3 = new aws.S3();
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: "jerryjudymary",
+    acl: "public-read",
+    key: function (req, file, cb) {
+      cb(null, "projectImage/" + Date.now() + "." + file.originalname.split(".").pop()); // 이름 설정
+    },
+  }),
+});
 
 // 개발자 정보 등록
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, upload.single("resumesImage"), async (req, res) => {
   try {
     const { userId } = res.locals.user;
     const { title, content, content2, content3, start, end, role, skills, email, phone } = req.body;
+    // const resumesImage = req.files.location; 와이어 프레임 완성전 까지 보류
     const dev = await Resume.create({ userId, title, content, content2, content3, start, end, role, skills, email, phone });
 
     res.status(200).send({ dev, message: "나의 정보를 등록 했습니다." });
@@ -20,7 +36,9 @@ router.post("/", authMiddleware, async (req, res) => {
 // 개발자 정보 전체 조회
 router.get("/", async (req, res) => {
   try {
-    const resumes = await Resume.find();
+    const { skills, role } = req.query;
+    // models에 timestamps를 이용하여 생성한 시간 기준 정렬
+    const resumes = await Resume.find({ skills, role }).sort({ createdAt: -1 });
 
     res.status(200).send({ resumes });
   } catch (error) {
