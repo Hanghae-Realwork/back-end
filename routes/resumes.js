@@ -20,8 +20,8 @@ const upload = multer({
 });
 
 // 팀원 찾기 등록
-// router.post("/", authMiddleware,upload.single(resumeImage), async (req, res) => {
-router.post("/", authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, upload.single(resumeImage), async (req, res) => {
+  // router.post("/", authMiddleware, async (req, res) => {
   try {
     const { userId } = res.locals.user;
     const { nickname, name, content, email, phone, start, end, role, skills, content2, content3 } = req.body;
@@ -42,8 +42,8 @@ router.post("/", authMiddleware, async (req, res) => {
     if (email.search(re_email) == -1) return res.status(400).send({ errormessage: "이메일 형식이 아닙니다." });
     if (phone.search(re_phone) == -1) return res.status(400).send({ errormessage: "숫자(2~3자리) - 숫자(3~4자리) - 숫자(4자리)" });
 
-    // await Resume.create({ userId, nickname, name, content, email, phone, start, end, role, skills, content2, content3, resumeImage });
-    await Resume.create({ userId, nickname, name, content, email, phone, start_date, end_date, role, skills, content2, content3 });
+    await Resume.create({ userId, nickname, name, content, email, phone, start_date, end_date, role, skills, content2, content3, resumeImage });
+    // await Resume.create({ userId, nickname, name, content, email, phone, start_date, end_date, role, skills, content2, content3 });
 
     res.status(200).send({ message: "나의 정보를 등록 했습니다." });
   } catch (error) {
@@ -105,12 +105,12 @@ router.put("/:resumeId", authMiddleware, upload.single("resumeImage"), async (re
 });
 
 // // 팀원 찾기 정보 프로필 이미지 수정
-// router.put("/:resumeId", authMiddleware, upload.single("profileImage"), async (req, res) => {
+// router.put("/:resumeId/profileImage", authMiddleware, upload.single("profileImage"), async (req, res) => {
 //   try {
 //   } catch (error) {}
 // });
 // // 팀원 찾기 정보 프로필 이미지 삭제
-// router.delete("/:resumeId", authMiddleware, async (req, res) => {
+// router.delete("/:resumeId/profileImage", authMiddleware, async (req, res) => {
 //   try {
 //   } catch (error) {}
 // });
