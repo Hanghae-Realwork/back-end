@@ -4,13 +4,18 @@ const ResumeSchema = new mongoose.Schema(
   {
     // resumeId: {
     //   type: String,
-    //   required: true
+    //   required: true,
+    //   unique: true,
     // },
     userId: {
       type: String,
       required: true,
     },
-    title: {
+    nickname: {
+      type: String,
+      required: true,
+    },
+    name: {
       type: String,
       required: true,
     },
@@ -18,20 +23,20 @@ const ResumeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content2: {
+    email: {
       type: String,
       required: true,
     },
-    content3: {
+    phone: {
       type: String,
       required: true,
     },
-    start: {
-      type: Date,
+    start_date: {
+      type: String,
       required: true,
     },
-    end: {
-      type: Date,
+    end_date: {
+      type: String,
       required: true,
     },
     role: {
@@ -43,13 +48,16 @@ const ResumeSchema = new mongoose.Schema(
       required: true,
       default: [],
     },
-    email: {
+    content2: {
       type: String,
       required: true,
     },
-    phone: {
+    content3: {
       type: String,
       required: true,
+    },
+    resumeImage: {
+      type: String,
     },
   },
   { timestamps: true }
@@ -60,4 +68,5 @@ ResumeSchema.virtual("resumeId").get(function () {
 ResumeSchema.set("toJSON", {
   virtuals: true,
 });
+
 module.exports = mongoose.model("Resume", ResumeSchema);
