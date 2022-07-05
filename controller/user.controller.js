@@ -11,9 +11,9 @@ const db = require("../config/database");
 const { postLoginSchema, postUsersSchema, postNicknameSchema, postUserIdSchema } = require("./validation.controller.js");
 
 const signUp = async (req, res) => {
-  console.log(req.body);
   try {
     var { userId, nickname, password, passwordCheck, name, birth, phone, policy } = await postUsersSchema.validateAsync(req.body);
+    console.log(req.body);
   } catch (err) {
     return res.status(400).send({ errorMessage: "작성 형식을 확인해주세요" });
   }
