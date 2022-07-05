@@ -60,4 +60,5 @@ ResumeSchema.virtual("resumeId").get(function () {
 ResumeSchema.set("toJSON", {
   virtuals: true,
 });
+
 module.exports = mongoose.model("Resume", ResumeSchema);
