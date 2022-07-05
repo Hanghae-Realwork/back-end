@@ -13,7 +13,8 @@ const { postLoginSchema, postUsersSchema, postNicknameSchema, postUserIdSchema }
 const signUp = async (req, res) => {
   console.log(req.body);
   try {
-    var { userId, nickname, password, passwordCheck, name, birth, phone, policy } = await postUsersSchema.validateAsync(req.body);
+    // var { userId, nickname, password, passwordCheck, name, birth, phone, policy } = await postUsersSchema.validateAsync(req.body);
+    var { userId, nickname, password, passwordCheck, name, birth, phone, policy } = req.body;
   } catch (err) {
     return res.status(400).send({ errorMessage: "작성 형식을 확인해주세요" });
   }
