@@ -2,11 +2,11 @@ const express = require("express");
 const Joi = require("joi");
 
 exports.postUsersSchema = Joi.object({
-  userId: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  nickname: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$")).required(),
-  // 한글,영어,숫자포함 가능 2~8자
+  // userId: Joi.string()
+  //   .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+  //   .required(),
+  // nickname: Joi.string().pattern(new RegExp("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$")).required(),
+  // // 한글,영어,숫자포함 가능 2~8자
   password: Joi.string()
     .pattern(new RegExp(/^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{4,16}$/))
     .required(),
