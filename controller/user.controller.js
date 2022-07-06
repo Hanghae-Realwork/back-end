@@ -54,7 +54,7 @@ const signUp = async (req, res) => {
       db.query(users, sql, (err, result) => {
         if (err) {
           console.log(err);
-          res.status(400).send({ errorMessage: "중복된 아이디 또는 닉네임 입니다." });
+          res.status(400).send({ errorMessage: "중복 검사가 필요합니다." });
         } else {
           console.log(result);
           res.status(200).send({ message: "회원가입을 축하합니다." });
