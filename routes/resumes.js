@@ -82,7 +82,7 @@ router.get("/", async (req, res) => {
 
         for (let i = 0; i < result.length; i++) {
           const resumesRaw = result[i];
-          const { name, resumeImage, content, start, end, role, createdAt } = resumesRaw;
+          const { nickname, resumeImage, content, start, end, role, createdAt } = resumesRaw;
 
           // moment 라이브러리를 활용하여 날짜 포멧 형식 지정
           const start_moment = moment(start).format("YYYY-MM-DD");
@@ -92,7 +92,7 @@ router.get("/", async (req, res) => {
           const skills = JSON.parse(resumesRaw.skills);
           // const resumeImage = JSON.parse(resumesRaw.resumeImage);
 
-          const resume = { name, resumeImage, content, start_moment, end_moment, role, skills, createdAt_moment };
+          const resume = { nickname, resumeImage, content, start_moment, end_moment, role, skills, createdAt_moment };
           // const resume = { content, email, phone, start_moment, end_moment, role, content2, content3, skills, userId, createdAt_moment };
           resumes.push(resume);
         }
@@ -114,7 +114,7 @@ router.get("/:resumeId", authMiddleware, async (req, res) => {
     await db.query(`SELECT * FROM resumes WHERE resumeId = ${resumeId}`, (error, result, fields) => {
       if (error) throw error;
       const [resumeRaw] = result;
-      const { name, content, email, phone, start, end, role, content2, content3 } = resumeRaw;
+      const { nickname, content, email, phone, start, end, role, content2, content3 } = resumeRaw;
 
       // moment 라이브러리를 활용하여 날짜 Format 형식
       const start_moment = moment(start).format("YYYY-MM-DD");
@@ -124,7 +124,7 @@ router.get("/:resumeId", authMiddleware, async (req, res) => {
       const resumeImages = JSON.parse(resumeRaw.resumeImage);
 
       // const resume = { content, email, phone, start_moment, end_moment, role, content2, content3, skills, userId, createdAt_moment };
-      const resume = { name, resumeImages, content, email, phone, start_moment, end_moment, role, content2, content3, skills };
+      const resume = { nickname, resumeImages, content, email, phone, start_moment, end_moment, role, content2, content3, skills };
       res.status(200).send({ resume });
     });
   } catch (error) {
