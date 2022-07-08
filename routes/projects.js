@@ -48,12 +48,11 @@ router.post("/photos", authMiddleware, upload.array("photos"), async (req, res) 
 
 // 프로젝트 등록
 
-router.post("/", /*authMiddleware,*/ async (req, res) => {
-  // if (!res.locals.user) {
-  //   res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
-  // } else {
-  //   const { userId } = res.locals.user;
-    const userId = 'judymary@gmail.com'
+router.post("/", authMiddleware, async (req, res) => {
+  if (!res.locals.user) {
+    res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
+  } else {
+    const { userId } = res.locals.user;
     try {
       var { title, details, subscript, role, start, end, skills, email, phone, schedule, photos } = await projectPostSchema.validateAsync(req.body);
     } catch (err) {
@@ -79,7 +78,7 @@ router.post("/", /*authMiddleware,*/ async (req, res) => {
 
       res.status(200).json({ message: "프로젝트 게시글을 작성했습니다." });
     }
-  /*}*/
+  }
 });
 
 // 프로젝트 조회
