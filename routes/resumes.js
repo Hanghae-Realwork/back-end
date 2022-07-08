@@ -85,14 +85,14 @@ router.get("/", async (req, res) => {
           const { nickname, resumeImage, content, start, end, role, createdAt } = resumesRaw;
 
           // moment 라이브러리를 활용하여 날짜 포멧 형식 지정
-          // const start_moment = moment(start).format("YYYY-MM-DD");
-          // const end_moment = moment(end).format("YYYY-MM-DD");
-          // let createdAt = moment();
+          const start_moment = moment(start).format("YYYY-MM-DD");
+          const end_moment = moment(end).format("YYYY-MM-DD");
+          const createdAt_moment = moment(createdAt).format("YYYY-MM-DD hh:mm:ss");
 
           const skills = JSON.parse(resumesRaw.skills);
           // const resumeImage = JSON.parse(resumesRaw.resumeImage);
 
-          const resume = { nickname, resumeImage, content, start, end, role, skills, createdAt };
+          const resume = { nickname, resumeImage, content, start_moment, end_moment, role, skills, createdAt_moment };
           // const resume = { content, email, phone, start_moment, end_moment, role, content2, content3, skills, userId, createdAt_moment };
           resumes.push(resume);
         }
@@ -117,14 +117,14 @@ router.get("/:resumeId", authMiddleware, async (req, res) => {
       const { nickname, content, email, phone, start, end, role, content2, content3 } = resumeRaw;
 
       // moment 라이브러리를 활용하여 날짜 Format 형식
-      // const start_moment = moment(start).format("YYYY-MM-DD");
-      // const end_moment = moment(end).format("YYYY-MM-DD");
+      const start_moment = moment(start).format("YYYY-MM-DD");
+      const end_moment = moment(end).format("YYYY-MM-DD");
 
       const skills = JSON.parse(resumeRaw.skills);
       const resumeImages = JSON.parse(resumeRaw.resumeImage);
 
       // const resume = { content, email, phone, start_moment, end_moment, role, content2, content3, skills, userId, createdAt_moment };
-      const resume = { nickname, resumeImages, content, email, phone, start, end, role, content2, content3, skills };
+      const resume = { nickname, resumeImages, content, email, phone, start_moment, end_moment, role, content2, content3, skills };
       res.status(200).send({ resume });
     });
   } catch (error) {
