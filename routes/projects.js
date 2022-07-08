@@ -22,9 +22,6 @@ const upload = multer({
   }),
 });
 
-// 전역변수로 시간 설정, 출력 예제) 1999-09-09 09:09:09
-
-const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
 
 // 이미지 업로드
 
@@ -65,7 +62,8 @@ router.post("/", authMiddleware, async (req, res) => {
       const skillsStr = JSON.stringify(skills);
       const photosStr = JSON.stringify(photos);
       const scheduleStr = JSON.stringify(schedule);
-
+      const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
+      
       const sql = `INSERT INTO projects
       (title, details, subscript, role, start, end, email, phone, userId, createdAt, schedule, skills, photos) 
       VALUES ('${title}', '${details}', '${subscript}', '${role}', '${start}',
