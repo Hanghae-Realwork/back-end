@@ -7,6 +7,7 @@ const multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
 const s3 = new aws.S3();
 const db = require("../config/database");
+const moment = require("moment");
 
 // multer - S3 이미지 업로드 설정
 
@@ -23,15 +24,7 @@ const upload = multer({
 
 // 전역변수로 시간 설정, 출력 예제) 1999-09-09 09:09:09
 
-const now = new Date();
-const years = now.getFullYear();
-const months = now.getMonth();
-const dates = now.getDate();
-const hours = now.getHours();
-const minutes = now.getMinutes();
-const seconds = now.getSeconds();
-const createdAt =
-  `${years < 10 ? `0${years}` : `${years}`}` + "-" + `${months < 10 ? `0${months}` : `${months}`}` + "-" + `${dates < 10 ? `0${dates}` : `${dates}`}` + " " + `${hours < 10 ? `0${hours}` : `${hours}`}` + ":" + `${minutes < 10 ? `0${minutes}` : `${minutes}`}` + ":" + `${seconds < 10 ? `0${seconds}` : `${seconds}`}`;
+const createdAt = moment().format("YYYY-MM-DD hh:mm:ss");
 
 // 이미지 업로드
 
@@ -60,7 +53,6 @@ router.post("/", authMiddleware, async (req, res) => {
     res.status(401).json({ errorMessage: "로그인 후 사용하세요." });
   } else {
     const { userId } = res.locals.user;
-
     try {
       var { title, details, subscript, role, start, end, skills, email, phone, schedule, photos } = await projectPostSchema.validateAsync(req.body);
     } catch (err) {

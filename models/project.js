@@ -52,7 +52,7 @@ const projectSchema = new mongoose.Schema({
     type: String,
   },
   schedule: {
-    type: Object,
+    type: Array,
   },
 });
 
@@ -86,7 +86,7 @@ const projectPostSchema = Joi.object({
   photos: Joi.array(),
   // 배열
   createdAt: Joi.string(),
-  schedule: Joi.object(),
+  schedule: Joi.array(),
 });
 
 module.exports = {
