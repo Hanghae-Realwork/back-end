@@ -5,8 +5,7 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: "root",
   password: process.env.DB_PASSWORD,
-  database: "rendevSQL",
-  multipleStatements : true
+  database: "rendev",
 });
 
 module.exports = db;

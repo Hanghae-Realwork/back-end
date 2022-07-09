@@ -1,34 +1,34 @@
 const express = require("express");
+// const mongoose = require("mongoose");
 const app = express();
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-// const db = require("./models/index.js");
-const { sequelize } = require("./models");
-
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("sequlize 연결 성공");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
 
 const usersRouter = require("./routes/users");
 const projectsRouter = require("./routes/projects");
 const resumesRouter = require("./routes/resumes");
 const matchesRouter = require("./routes/matches");
-const searchRouter = require("./routes/search");
-const applicationsRouter = require("./routes/applications");
 const port = 3000;
 require("dotenv").config();
 
-// const host = ["http://localhost:3000/login", "http://localhost:3000/mainrecruit"];
+// mongoose
+//   .connect(process.env.MONGODB, {
+//     dbName: "renDev",
+//     ignoreUndefined: true,
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .catch((err) => {
+//     console.error(err);
+//   });
+
+// const db = mongoose.connection;
+// db.on("error", console.error.bind(console, "connection error:"));
 
 app.use(
   cors({
-    // exposedHeaders: ["authorization"],
+    // exposedHeaders:["authorization"],
     origin: "*",
     credentials: "true",
   })
@@ -45,8 +45,7 @@ app.use("/api/users", [usersRouter]);
 app.use("/api/projects", [projectsRouter]);
 app.use("/api/resumes", [resumesRouter]);
 app.use("/api/matches", [matchesRouter]);
-app.use("/api/search", [searchRouter]);
-app.use("/api/applications", [applicationsRouter]);
+
 app.listen(port, () => {
   console.log(port, "포트로 서버가 켜졌습니다.");
 });

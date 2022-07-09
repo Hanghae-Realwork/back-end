@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { Op } = require("sequelize");
-const { User, Project, ProjectSkill, ProjectPhoto, Resume, ResumeSkill, sequelize } = require("../models");
-const authMiddleware = require("../middlewares/authMiddleware");
+
+// MySQL DB import, config, connection
+const mysql = require("mysql");
+const dbConfig = require("../config/database");
+const connection = mysql.createConnection(dbConfig);
+const { Sequelize } = require("sequelize");
 
 // 매칭기능 1) 프로젝트에 맞는 이력서를 조회
 router.get("/resumes/:projectId", async (req, res) => {
