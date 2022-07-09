@@ -24,10 +24,12 @@ const applicationsRouter = require("./routes/applications");
 const port = 3000;
 require("dotenv").config();
 
+const host = ["http://localhost:3000/login", "http://localhost:3000/mainrecruit"];
+
 app.use(
   cors({
-    // exposedHeaders:["authorization"],
-    origin: "*",
+    exposedHeaders: ["authorization"],
+    origin: host,
     credentials: "true",
   })
 );
