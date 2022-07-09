@@ -152,6 +152,8 @@ const login = async (req, res) => {
             // access token은 FE에 직접 send로 내보내기
             res.cookie("refreshToken", refreshToken, {
               httpOnly: true,
+              samSite: "None",
+              expires: new Date(Date.now() + 3600000 * 2),
             });
             res.status(200).send({
               message: "로그인 하셨습니다.",
