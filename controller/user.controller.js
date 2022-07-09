@@ -150,13 +150,13 @@ const login = async (req, res) => {
             });
             // refresh token은 cookie에 직접 넣어서 전달,
             // access token은 FE에 직접 send로 내보내기
-            const refresh = res.cookie("refreshToken", refreshToken, {
+            res.cookie("refreshToken", refreshToken, {
               httpOnly: true,
             });
             res.status(200).send({
               message: "로그인 하셨습니다.",
               token,
-              refresh,
+              refreshToken,
             });
           }
         });
