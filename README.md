@@ -1,4 +1,4 @@
-# (deprecated) renDev BackEnd의 "예전" repository 입니다.
+# (deprecated) this repository has been moved to...
 
 앗! 죄송합니다. 현재 이 repository는 사용하지 않습니다 🙏
 <br>
